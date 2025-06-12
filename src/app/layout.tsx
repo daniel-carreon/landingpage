@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { StructuredData } from "@/components/ui/StructuredData";
+import { ChatBot } from "@/components/ui/ChatBot";
 
 export const metadata: Metadata = {
   title: "AI Agency - Automatización IA que Transforma Negocios",
@@ -80,6 +81,8 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         {children}
+        {/* AI Chatbot Widget */}
+        <ChatBot />
       </body>
     </html>
   );
