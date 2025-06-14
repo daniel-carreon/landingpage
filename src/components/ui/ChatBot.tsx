@@ -192,20 +192,30 @@ export function ChatBot() {
 
             {/* Input Area */}
             <div className="border-t border-gold-500/20 p-4">
-              <form onSubmit={handleSubmit} className="flex space-x-2">
-                <input
-                  type="text"
+              <form onSubmit={handleSubmit} className="flex items-end space-x-2">
+                <textarea
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={handleKeyPress}
                   placeholder={config.ui.placeholderText}
-                  className="flex-1 bg-dark-800 border border-gold-500/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-gold-500/40 focus:ring-1 focus:ring-gold-500/20 transition-all"
+                  className="flex-1 bg-dark-800 border border-gold-500/20 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-gold-500/40 focus:ring-1 focus:ring-gold-500/20 transition-all resize-none min-h-[48px] max-h-32 overflow-y-auto"
+                  rows={1}
                   disabled={isLoading}
+                  style={{
+                    height: 'auto',
+                    minHeight: '48px',
+                    maxHeight: '128px'
+                  }}
+                  onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = Math.min(target.scrollHeight, 128) + 'px';
+                  }}
                 />
                 <motion.button
                   type="submit"
                   disabled={!inputMessage.trim() || isLoading}
-                  className="bg-gold-gradient text-dark-950 p-3 rounded-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="bg-gold-gradient text-dark-950 p-3 rounded-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all flex-shrink-0"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >

@@ -6,7 +6,9 @@
 export interface ChatBotConfig {
   webhook: {
     url: string;
+    fallbackUrl?: string;
     timeout: number;
+    testTimeout?: number;
     retries: number;
   };
   ui: {
@@ -36,10 +38,11 @@ export interface ChatBotConfig {
  */
 export const defaultChatBotConfig: ChatBotConfig = {
   webhook: {
-    // CONNECTED: Real N8N webhook URL configured ✅
-    // This is your actual N8N webhook endpoint
-    url: 'https://zzn8n.danielcarreon.site/webhook-test/781a6827-a1a3-4be2-ad88-276f538b2b74',
-    timeout: 30000, // 30 seconds
+    // SMART WEBHOOK SYSTEM: Test (priority) + Production (fallback)
+    url: 'https://zzn8n.danielcarreon.site/webhook-test/chat', // Primary (TEST)
+    fallbackUrl: 'https://zzwebhookn8n.danielcarreon.site/webhook/chat', // Fallback (PROD)
+    timeout: 30000, // 30 seconds for production
+    testTimeout: 3000, // 3 seconds for test webhook
     retries: 3
   },
   ui: {

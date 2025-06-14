@@ -71,13 +71,13 @@ export function useChatBot(): ChatBotState {
   };
 
   /**
-   * Send message to N8N webhook with retry logic
+   * Try single webhook with specific timeout
    */
-  const sendToWebhook = async (message: string, retryCount = 0): Promise<string> => {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), config.webhook.timeout);
+  const tryWebhook = async (url: string, message: string, timeout: number): Promise<string> => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
 
+    try {
       // Build query parameters for GET request (N8N webhook configuration)
       const params = new URLSearchParams({
         message,
@@ -87,7 +87,7 @@ export function useChatBot(): ChatBotState {
         userAgent: navigator.userAgent
       });
 
-      const response = await fetch(`${config.webhook.url}?${params.toString()}`, {
+      const response = await fetch(`${url}?${params.toString()}`, {
         method: 'GET',
         signal: controller.signal
       });
@@ -117,11 +117,11 @@ export function useChatBot(): ChatBotState {
       else if (data.message) {
         return data.message;
       }
-      // Format 4: Direct string
+      // Format 5: Direct string
       else if (typeof data === 'string') {
         return data;
       }
-      // Format 5: Nested data object
+      // Format 6: Nested data object
       else if (data.data && data.data.response) {
         return data.data.response;
       }
@@ -130,12 +130,55 @@ export function useChatBot(): ChatBotState {
         return 'Gracias por tu mensaje. Te responderé pronto.';
       }
 
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  };
+
+  /**
+   * Smart webhook sender with TEST → PRODUCTION fallback
+   * Prioritizes test webhook, falls back to production automatically
+   */
+  const sendToWebhook = async (message: string, retryCount = 0): Promise<string> => {
+    try {
+      // STEP 1: Try TEST webhook first (fast timeout)
+      if (config.webhook.url) {
+        try {
+          console.log('🧪 Trying TEST webhook:', config.webhook.url);
+          const testResponse = await tryWebhook(
+            config.webhook.url, 
+            message, 
+            config.webhook.testTimeout || 3000
+          );
+          console.log('✅ TEST webhook successful');
+          return testResponse;
+        } catch {
+          console.log('❌ TEST webhook failed, falling back to PRODUCTION');
+          // Continue to production fallback
+        }
+      }
+
+      // STEP 2: Fallback to PRODUCTION webhook
+      if (config.webhook.fallbackUrl) {
+        console.log('🚀 Using PRODUCTION webhook:', config.webhook.fallbackUrl);
+        const prodResponse = await tryWebhook(
+          config.webhook.fallbackUrl, 
+          message, 
+          config.webhook.timeout
+        );
+        console.log('✅ PRODUCTION webhook successful');
+        return prodResponse;
+      }
+
+      // No fallback available
+      throw new Error('No webhook URLs configured');
+
     } catch (error) {
-      console.error('Webhook error:', error);
+      console.error('All webhooks failed:', error);
       
-      // Retry logic
-      if (retryCount < config.webhook.retries) {
-        console.log(`Retrying webhook call... Attempt ${retryCount + 1}`);
+      // Retry logic (only for production webhook)
+      if (retryCount < config.webhook.retries && config.webhook.fallbackUrl) {
+        console.log(`🔄 Retrying PRODUCTION webhook... Attempt ${retryCount + 1}`);
         await new Promise(resolve => setTimeout(resolve, 1000 * (retryCount + 1))); // Exponential backoff
         return sendToWebhook(message, retryCount + 1);
       }
