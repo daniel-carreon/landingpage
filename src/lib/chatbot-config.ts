@@ -36,9 +36,9 @@ export interface ChatBotConfig {
  */
 export const defaultChatBotConfig: ChatBotConfig = {
   webhook: {
-    // IMPORTANT: Replace this URL with your actual N8N webhook endpoint
-    // This is the exact line you need to modify when you have your N8N webhook ready
-    url: 'https://your-n8n-instance.com/webhook/chatbot-test',
+    // CONNECTED: Real N8N webhook URL configured ✅
+    // This is your actual N8N webhook endpoint
+    url: 'https://zzn8n.danielcarreon.site/webhook-test/781a6827-a1a3-4be2-ad88-276f538b2b74',
     timeout: 30000, // 30 seconds
     retries: 3
   },
@@ -85,17 +85,8 @@ export function getChatBotConfig(): ChatBotConfig {
  * - https://n8n.your-company.com/webhook/ai-assistant
  * - https://hooks.zapier.com/hooks/catch/... (if using Zapier)
  * 
- * Expected payload format sent to N8N:
- * {
- *   "message": "User's message text",
- *   "timestamp": "2024-01-01T00:00:00.000Z",
- *   "sessionId": "unique_session_identifier",
- *   "metadata": {
- *     "source": "landing-page-chatbot",
- *     "userAgent": "Mozilla/5.0...",
- *     "page": "homepage"
- *   }
- * }
+ * Expected payload format sent to N8N (GET request with query params):
+ * https://your-webhook-url?message=User%20message&timestamp=2024-01-01T00:00:00.000Z&sessionId=session_123&source=landing-page-chatbot&userAgent=Mozilla...
  * 
  * Expected response format from N8N (any of these work):
  * Option 1: { "response": "AI assistant response" }

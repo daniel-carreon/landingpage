@@ -78,20 +78,17 @@ export function useChatBot(): ChatBotState {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), config.webhook.timeout);
 
-      const response = await fetch(config.webhook.url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message,
-          timestamp: new Date().toISOString(),
-          sessionId: `session_${Date.now()}`, // Simple session ID
-          metadata: {
-            source: 'landing-page-chatbot',
-            userAgent: navigator.userAgent
-          }
-        }),
+      // Build query parameters for GET request (N8N webhook configuration)
+      const params = new URLSearchParams({
+        message,
+        timestamp: new Date().toISOString(),
+        sessionId: `session_${Date.now()}`,
+        source: 'landing-page-chatbot',
+        userAgent: navigator.userAgent
+      });
+
+      const response = await fetch(`${config.webhook.url}?${params.toString()}`, {
+        method: 'GET',
         signal: controller.signal
       });
 
@@ -104,13 +101,32 @@ export function useChatBot(): ChatBotState {
       const data = await response.json();
       
       // Handle different response formats from N8N
-      if (data.response) {
+      // Format 1: Direct object with output property (N8N current format)
+      if (data.output) {
+        return data.output;
+      }
+      // Format 2: Array with output property (N8N alternative format)
+      else if (Array.isArray(data) && data.length > 0 && data[0].output) {
+        return data[0].output;
+      }
+      // Format 3: Object with response property
+      else if (data.response) {
         return data.response;
-      } else if (data.message) {
+      }
+      // Format 4: Object with message property
+      else if (data.message) {
         return data.message;
-      } else if (typeof data === 'string') {
+      }
+      // Format 4: Direct string
+      else if (typeof data === 'string') {
         return data;
-      } else {
+      }
+      // Format 5: Nested data object
+      else if (data.data && data.data.response) {
+        return data.data.response;
+      }
+      // Fallback
+      else {
         return 'Gracias por tu mensaje. Te responderé pronto.';
       }
 

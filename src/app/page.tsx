@@ -6,6 +6,7 @@ import { Contact } from '@/components/sections/Contact';
 import { ScrollIndicator } from '@/components/ui/ScrollIndicator';
 import { CustomCursor } from '@/components/ui/CustomCursor';
 import { FloatingParticles } from '@/components/ui/FloatingParticles';
+import { ChatBot } from '@/components/ui/ChatBot';
 
 export default function Home() {
   return (
@@ -14,6 +15,9 @@ export default function Home() {
       <ScrollIndicator />
       <CustomCursor />
       <FloatingParticles count={15} />
+      
+      {/* AI Chatbot Assistant */}
+      <ChatBot />
       
       {/* Header with navigation */}
       <Header />

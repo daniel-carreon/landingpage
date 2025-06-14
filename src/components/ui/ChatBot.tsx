@@ -53,7 +53,7 @@ export function ChatBot() {
     <>
       {/* Floating Chat Bubble */}
       <motion.div
-        className="fixed bottom-6 right-6 z-50"
+        className="fixed bottom-6 right-6 z-50 sm:bottom-6 sm:right-6"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ 
@@ -116,7 +116,7 @@ export function ChatBot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed bottom-24 right-6 z-40 w-96 h-[500px] glass-dark shadow-2xl rounded-2xl overflow-hidden"
+            className="fixed bottom-24 right-6 z-40 w-96 max-w-[calc(100vw-3rem)] h-[500px] max-h-[calc(100vh-8rem)] glass-dark shadow-2xl rounded-2xl overflow-hidden flex flex-col sm:w-96 sm:bottom-24 sm:right-6"
             initial={{ 
               opacity: 0, 
               scale: 0.8, 
@@ -160,7 +160,7 @@ export function ChatBot() {
             </div>
 
             {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 h-96 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar min-h-0">
               {/* Welcome message */}
               {messages.length === 0 && (
                 <motion.div
