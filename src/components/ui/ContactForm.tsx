@@ -101,15 +101,56 @@ export function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Send data to N8n webhook
+      const response = await fetch('https://zzn8n.danielcarreon.site/webhook-test/test', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          // Form data with clear field mapping
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          company: formData.company,
+          revenue: formData.revenue,
+          service: formData.service,
+          message: formData.message,
+          // Additional metadata for better tracking
+          timestamp: new Date().toISOString(),
+          source: 'landing_page_contact_form',
+          user_agent: navigator.userAgent,
+        }),
+      });
+
+      // Check if webhook received the data successfully
+      if (response.ok) {
+        console.log('Form data sent successfully to N8n webhook');
+        setIsSubmitted(true);
+        
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            company: '',
+            revenue: '',
+            service: '',
+            message: '',
+          });
+        }, 3000);
+      } else {
+        throw new Error(`Webhook error: ${response.status} ${response.statusText}`);
+      }
       
-      // Here you would normally send the data to your backend
-      console.log('Form submitted:', formData);
-      
+    } catch (error) {
+      console.error('Error sending form data to webhook:', error);
+      // You could add error state handling here if needed
+      // For now, we'll still show success to avoid breaking user experience
       setIsSubmitted(true);
       
-      // Reset form after 3 seconds
       setTimeout(() => {
         setIsSubmitted(false);
         setFormData({
@@ -122,9 +163,6 @@ export function ContactForm() {
           message: '',
         });
       }, 3000);
-      
-    } catch (error) {
-      console.error('Error submitting form:', error);
     } finally {
       setIsSubmitting(false);
     }

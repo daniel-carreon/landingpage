@@ -1,0 +1,347 @@
+{
+  "name": "Contact-Form",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "=form",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "5a434ed3-71ef-4b58-8417-0416949c6085",
+      "name": "Webhook",
+      "webhookId": "69b37d85-69c1-4f5c-82a7-e5bc9b5156ec"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "apped4mT1HPaAIL4h",
+          "mode": "list",
+          "cachedResultName": "Embudo - Cognitiveds",
+          "cachedResultUrl": "https://airtable.com/apped4mT1HPaAIL4h"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblkfOmRxEE2VLBHX",
+          "mode": "list",
+          "cachedResultName": "Leads-Formulario",
+          "cachedResultUrl": "https://airtable.com/apped4mT1HPaAIL4h/tblkfOmRxEE2VLBHX"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Cliente": "={{ $json.body.name }}",
+            "Empresa": "={{ $json.body.company }}",
+            "Correo": "={{ $json.body.email }}",
+            "Presupuesto": "={{ $json.body.budget }}",
+            "Contexto": "={{ $json.body.message }}",
+            "Sitio Web o Red Social": "={{ $json.body.website }}",
+            "Teléfono": "={{ $json.body.phoneNumber }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Empresa",
+              "displayName": "Empresa",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Correo",
+              "displayName": "Correo",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Presupuesto",
+              "displayName": "Presupuesto",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Básico (500 - 1.500 USD)",
+                  "value": "Básico (500 - 1.500 USD)"
+                },
+                {
+                  "name": "Estándar (1.500 - 3.000 USD)",
+                  "value": "Estándar (1.500 - 3.000 USD)"
+                },
+                {
+                  "name": "Premium (3.000 - 5.000 USD)",
+                  "value": "Premium (3.000 - 5.000 USD)"
+                },
+                {
+                  "name": "Empresarial (5.000+ USD)",
+                  "value": "Empresarial (5.000+ USD)"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Contexto",
+              "displayName": "Contexto",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Creada",
+              "displayName": "Creada",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Sitio Web o Red Social",
+              "displayName": "Sitio Web o Red Social",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Teléfono",
+              "displayName": "Teléfono",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        0
+      ],
+      "id": "41f991a2-5c71-48eb-a389-41a4b5409f4d",
+      "name": "Airtable",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "kIqIyjcDckit2p7y",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=nombre: {{ $('Webhook').item.json.body.name }}\ncompañía: {{ $('Webhook').item.json.body.company }}\nemail: {{ $('Webhook').item.json.body.email }}\npresupuesto: {{ $('Webhook').item.json.body.budget }}\nContexto: {{ $('Webhook').item.json.body.message }}\ntimestamp: {{ $('Webhook').item.json.body.timestamp }}",
+        "options": {
+          "systemMessage": "Eres LEVY, el agente de atención al cliente en nuestra Agencia de Automatización con IA llamada \"Cognitive Data Solutions\"\n\nEstás dentro de un flujo de trabajo. Los datos que has recibido por parte del usuario son porque este ha llenado nuestro formulario en nuestro sitio web.\n\nTu deber es enviar un correo ultrapersonalizado, siendo lo más amable posible. \n\nLa intención del correo es:\n\n* Predicar con el ejemplo\n* Nutrir al usuario tan pronto posible\n* Hacérle saber que hemos recibido su intención de trabajar con nosotros, y que un personal de ventas se pondrá en contacto por WhatsApp tan pronto posible\n\nAsegúrate de ser super amable, profesional y alguno que otro cumplido en los datos que puedas recopilar del usuario para hacerlo sentir escuchado.\n\nNota: \n* Genera el cuerpo del correo en **formato HTML sin encerrar en bloque de código**, solo el contenido renderizable para correo electrónico.\n* Incluye un saludo profesional con el nombre, un body y una despedida con tu nombre y \"Cognitive Data Solutions\"\n* Los correos deben ser siempre menores de 100 palabras y 3 parráfos"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        700,
+        -40
+      ],
+      "id": "7cbd3a50-b8b6-40ed-af4a-ce3515155c42",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        700,
+        200
+      ],
+      "id": "21e58d92-e7a7-4c39-8938-24b5781a435f",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "faFt6zZckTCq9A7E",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.email }}",
+        "subject": "re: Cognitive Data Solutions",
+        "message": "={{ $json.output }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1040,
+        -20
+      ],
+      "id": "b7289f33-4f7a-4db1-9ee3-9c42cad48fa9",
+      "name": "Gmail1",
+      "webhookId": "6a864dbe-d7b7-4251-9d4d-42967c6258e3",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "75qHNjqGVfvpttM8",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C08N3ADAAHK",
+          "mode": "list",
+          "cachedResultName": "cognitiveds"
+        },
+        "text": "=Ha llegado un nuevo Lead! 🦾🔥\n{{ $json.fields.Cliente }}, del negocio \"\"{{ $json.fields.Empresa }}\"\", con presupuesto: {{ $json.fields.Presupuesto }}, ha dejado la siguiente solicitud:\n\n\"{{ $json.fields.Contexto }}\"",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        460,
+        -40
+      ],
+      "id": "6ebf51a0-c00e-4c63-8647-f606f6aa27fc",
+      "name": "Slack",
+      "webhookId": "97d0817e-b522-48de-ba0d-e99d4b8fabfe",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "YYF8PRy5MnJS3uxH",
+          "name": "Slack oauth"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Airtable": {
+      "main": [
+        [
+          {
+            "node": "Slack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Gmail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "7ca134bb-3a8e-4d1c-8950-22e0ea5e9c17",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8220e5fed25105bd0c986cabd12ec960c65dd403a7c727206e68b89e6315bdd2"
+  },
+  "id": "aILRsfOGNHfYLttx",
+  "tags": []
+}
